@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: getApplicationThemeData(),
-      title: 'Task',
+      title: 'klshimol Task',
       home: const MainScreen(),
     );
   }
