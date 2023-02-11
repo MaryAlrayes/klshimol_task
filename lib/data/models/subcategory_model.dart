@@ -7,7 +7,7 @@ class SubcategoryModel extends SubcategoryEntity {
     return SubcategoryModel(
       name: map['Name'] as String,
       details: List<DetailsModel>.from(
-        (map['AllFields'] as List<Map<String, dynamic>>).map<DetailsModel>(
+        (map['AllFields'] as List<dynamic>).map<DetailsModel>(
           (x) => DetailsModel.fromJson(x),
         ),
       ),

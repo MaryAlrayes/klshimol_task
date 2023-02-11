@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -28,16 +29,16 @@ class InfoDataSourceWithHttp implements InfoDataSource {
       final response = await client.get(
         Uri.parse('$BASE_URL/GetCategoryDetails?Lang=En'),
         headers: {
-          "content-type": "application/json; charset=utf-8",
+          //"content-type": "application/json; charset=utf-8",
           "Content-Encoding": "gzip",
-            'Charset': 'utf-8'
+          "Charset": "utf-8"
         },
       );
+
       print('status code ${response.statusCode}');
       final decodedResponse = DecodeResponse.decode(response);
-      print('decodedresponse $decodedResponse');
-      final  infoDecompressed = decompress(decodedResponse['compressedData']);
-      print('done $infoDecompressed');
+      final infoDecompressed = decompress(decodedResponse['compressedData']);
+
       List<InfoModel> info = [];
       for (int i = 0; i < infoDecompressed.length; i++) {
         InfoModel infoModel = InfoModel.fromJson(infoDecompressed[i]);
@@ -46,7 +47,7 @@ class InfoDataSourceWithHttp implements InfoDataSource {
       return Right(info);
     } on SocketException {
       throw ExceptionSocket();
-    } on FormatException catch(e) {
+    } on FormatException catch (e) {
       print(e);
       throw ExceptionFormat();
     } on TimeoutException {
@@ -60,16 +61,22 @@ class InfoDataSourceWithHttp implements InfoDataSource {
     }
   }
 
- List<dynamic> decompress(String data) {
-    final Uint8List compressed = base64Decode(data);
-    if (compressed.length > 4) {
-      List<int> decodedData =  gzip.decode(
-        compressed.sublist(4, compressed.length - 4),
-      );
-      String utfDecoded = utf8.decode(decodedData,);
-      return json.decode( utfDecoded) as List<dynamic>;
-    } else {
-      return [];
-    }
+  dynamic decompress(String data) {
+
+    final Uint8List b64DecodedData = base64Decode(data);
+    List<int> decodedData =
+        gzip.decode(b64DecodedData.sublist(4, b64DecodedData.length - 4));
+    Uint8List uint8Bytes = Uint8List.fromList(decodedData);
+    ByteData finalBuffer = ByteData.view(uint8Bytes.buffer);
+    var jsonString = utf8.decode(finalBuffer.buffer.asInt16List(),allowMalformed: true);
+
+
+    // final Uint8List compressed = base64Decode(data);
+    //   List<int> decodedData =  gzip.decode(
+    //     compressed.sublist(4, compressed.length - 4),
+    //   );
+    //   String utfDecoded = utf8.decode(decodedData,allowMalformed: true);
+     return json.decode(jsonString) as List<dynamic>;
   }
+
 }

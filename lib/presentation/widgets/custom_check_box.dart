@@ -18,14 +18,14 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-  title: Text(widget.item),
+  title: Text('-${widget.item}'),
   value: checkedValue,
   onChanged: (newValue) {
     setState(() {
       checkedValue = newValue;
     });
   },
-  controlAffinity: ListTileControlAffinity.leading, 
+  controlAffinity: ListTileControlAffinity.leading,
 );
   }
 }

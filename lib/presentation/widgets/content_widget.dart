@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:klshimol_task/domain/entities/details_entity.dart';
 
 import '../../core/managers/color_manager.dart';
 import '../../core/managers/font_manager.dart';
@@ -15,18 +16,15 @@ class ContentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: [
-            _buildCard(),
-            _buildCard(),
-            _buildCard(),
-            _buildCard(),
-          ],
-        ));
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+        itemCount: info.length,
+        itemBuilder: (context, index) => _buildCard(info[index]),
+      ),
+    );
   }
 
-  Card _buildCard() {
+  Card _buildCard(InfoEntity infoEntity) {
     return Card(
       elevation: 1,
       child: Padding(
@@ -34,26 +32,28 @@ class ContentWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildCategoryName('Properties'),
-            _buildSubCategoryName('1) All Properties'),
-            _buildSubCategoryName('2) Residential Properties'),
-            _buildDetails(1),
-            _buildDetails(2),
-            _buildDetails(3),
-            _buildSubCategoryName('3) Commercial Properties'),
-            _buildDetails(4),
-            _buildDetails(5),
-            _buildDetails(6),
-            _buildSubCategoryName('4) Land'),
-            _buildDetails(7),
-            _buildDetails(8),
+            _buildCategoryName(infoEntity.name),
+            for (int i = 0; i < infoEntity.subcategories.length; i++)
+              _buildSubcategory(infoEntity, i)
           ],
         ),
       ),
     );
   }
 
-
+  Column _buildSubcategory(InfoEntity infoEntity, int i) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildSubCategoryName(infoEntity.subcategories[i].name, i),
+        ...infoEntity.subcategories[i].details
+            .map(
+              (e) => _buildDetails(e),
+            )
+            .toList()
+      ],
+    );
+  }
 
   Widget _buildCategoryName(String label) {
     return Text(
@@ -65,12 +65,11 @@ class ContentWidget extends StatelessWidget {
     );
   }
 
-
-  Widget _buildSubCategoryName(String name) {
+  Widget _buildSubCategoryName(String name, int index) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
-        name,
+        '${index + 1}) $name',
         style: getSemiBoldStyle(
           color: Colors.black,
           fontSize: FontSize.s16,
@@ -79,54 +78,37 @@ class ContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildDetails(int type) {
-    switch (type) {
+  Widget _buildDetails(DetailsEntity detailsEntity) {
+    switch (detailsEntity.fieldType) {
       case 4:
-        return const Padding(
-          padding: EdgeInsets.all(8.0),
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
           child: CustomDropDown(
-            items: ['Item1', 'Item2', 'Item3'],
-            label: 'Drop Down Label',
+            items: detailsEntity.contentList!,
+            label: detailsEntity.fieldName,
           ),
         );
       case 6:
-        return const Padding(
-          padding: EdgeInsets.all(8.0),
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
           child: CustomRadioButton(
-            items: ['Item1', 'Item2', 'Item3'],
-            label: 'Radio Buttons Label',
+            items: detailsEntity.contentList!,
+            label: detailsEntity.fieldName,
           ),
         );
       case 7:
-        return const CustomCheckBox(item: 'item');
+        return CustomCheckBox(item: detailsEntity.fieldName);
       default:
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-           getLabelFromType(type),
+            '-${detailsEntity.fieldName}',
             style: getMediumStyle(
               color: Colors.black,
               fontSize: FontSize.s14,
             ),
           ),
         );
-    }
-  }
-
-  String getLabelFromType(int type){
-    switch(type){
-      case 1:
-      return 'Text';
-      case 2:
-      return 'Integer';
-      case 3:
-      return 'Decimal';
-      case 5:
-      return 'List';
-      case 8:
-      return 'Label';
-      default:
-      return '';
     }
   }
 }

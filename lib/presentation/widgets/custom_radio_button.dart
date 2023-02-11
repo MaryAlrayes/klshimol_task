@@ -25,7 +25,7 @@ class _CustomRadioButtonState extends State<CustomRadioButton> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          widget.label,
+          '-${widget.label}',
           style: getMediumStyle(
             color: Colors.black,
             fontSize: FontSize.s14,

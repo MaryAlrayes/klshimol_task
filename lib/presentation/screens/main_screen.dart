@@ -60,8 +60,8 @@ class MainScreen extends StatelessWidget {
   }
 
 
-  Widget _buildSuccesfulBody(InfoState state) {
-    return  const ContentWidget(info: [],);
+  Widget _buildSuccesfulBody(InfoFetchedState state) {
+    return  ContentWidget(info: state.info,);
   }
 
   NetworkErrorWidget _buildNetworkErrorBody(

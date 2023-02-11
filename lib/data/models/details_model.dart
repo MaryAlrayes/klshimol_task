@@ -8,7 +8,7 @@ class DetailsModel extends DetailsEntity {
       fieldType: map['FieldType'] as int,
       fieldName: map['FieldName'] as String,
       contentList: map['contentList'] != null
-          ? (map['contentList'] as List<Map<String, dynamic>>)
+          ? (map['contentList'] as List<dynamic>)
               .map((e) => e['Name'] as String)
               .toList()
           : null,

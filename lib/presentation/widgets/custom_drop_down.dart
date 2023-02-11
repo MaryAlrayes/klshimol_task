@@ -29,7 +29,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          widget.label,
+            '-${widget.label}',
           style: getMediumStyle(
             color: Colors.black,
             fontSize: FontSize.s14,

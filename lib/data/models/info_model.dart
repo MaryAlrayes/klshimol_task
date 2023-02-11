@@ -11,7 +11,7 @@ class InfoModel extends InfoEntity {
     return InfoModel(
       name: map['Name'] as String,
       subcategories: List<SubcategoryModel>.from(
-        (map['SubCategory'] as List<Map<String,dynamic>>).map<SubcategoryModel>(
+        (map['SubCategory'] as List<dynamic>).map<SubcategoryModel>(
           (x) => SubcategoryModel.fromJson(x),
         ),
       ),
